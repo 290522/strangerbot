@@ -5,6 +5,8 @@ Namespace = "MyApp"
 Secret = "mySecretToken"
 # Telegram Bot Key Input Here
 BotKey = "Telegram Bot Key"
+# Is it possible to change gender? true or false
+ChangeGenderEnabled = false
 
 [WhiteList]
 # white email domain enabled
@@ -83,3 +85,27 @@ VerifiedOptionId = 0
 UnverifiedOptionId = 0
 # anything option id
 AnyOptionId = 0
+
+[FemaleMatchRateLimit]
+# female option id
+OptionId = 2
+# rate limit endabled
+RateLimitEnabled = true
+# rate limit unit only support "day"
+RateLimitUnit = "day"
+# rate limit unit period, don't change this value.
+RateLimitUnitPeriod = 7
+# match per rate
+MatchPerRate = 2
+
+[MaleMatchRateLimit]
+# male option id
+OptionId = 3
+# rate limit endabled
+RateLimitEnabled = true
+# rate limit unit only support "day"
+RateLimitUnit = "day"
+# rate limit unit period, don't change this value.
+RateLimitUnitPeriod = 7
+# match per rate
+MatchPerRate = 2

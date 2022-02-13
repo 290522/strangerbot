@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"strangerbot/repository"
 	"strangerbot/repository/model"
@@ -87,6 +88,7 @@ func matchUsers(chatIDs <-chan int64) {
 
 		createMatch(user.ChatID, user.ID, matchUser.ChatID, matchUser.ID, userProfileStr, userGoals, matchedUserProfileStr, matchedUserGoals)
 
+		time.Sleep(100 * time.Millisecond)
 	}
 
 }
@@ -97,6 +99,10 @@ func createMatch(userChatId, userId, matchUserChatId, matchUserId int64, userPro
 
 	db.Exec(query, userChatId, matchUserId)
 	db.Exec(query, matchUserChatId, userId)
+
+	// record
+	_ = service.ServiceMatchedDetailRecord(context.Background(), userChatId, matchUserChatId)
+	_ = service.ServiceMatchedDetailRecord(context.Background(), matchUserChatId, userChatId)
 
 	if len(userProfile) == 0 {
 		userProfile = "(!NOT SETTING)"
@@ -114,7 +120,7 @@ func createMatch(userChatId, userId, matchUserChatId, matchUserId int64, userPro
 		matchedUserGoals = "(!NOT SETTING)"
 	}
 
-	telegram.SendMessage(matchUserChatId, fmt.Sprintf(vars.MatchedMessage, userProfile, userGoals), emptyOpts)
-	telegram.SendMessage(userChatId, fmt.Sprintf(vars.MatchedMessage, matchedUserProfile, matchedUserGoals), emptyOpts)
+	_, _ = telegram.SendMessage(matchUserChatId, fmt.Sprintf(vars.MatchedMessage, userProfile, userGoals), emptyOpts)
+	_, _ = telegram.SendMessage(userChatId, fmt.Sprintf(vars.MatchedMessage, matchedUserProfile, matchedUserGoals), emptyOpts)
 
 }

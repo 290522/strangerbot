@@ -54,3 +54,14 @@ func (u UserQuestionDataList) GetFirstOptionIdByQuestionId(questionId int64) int
 
 	return 0
 }
+
+func (u UserQuestionDataList) CheckExistsOption(optionId int64) bool {
+
+	for _, item := range u {
+		if optionId == item.OptionId {
+			return true
+		}
+	}
+
+	return false
+}

@@ -21,6 +21,21 @@ func ServiceQuestionOption(ctx context.Context, chatId int64, data *keyboard.Key
 		return nil, nil, nil
 	}
 
+	// change gender
+	if option.ID == vars.FemaleMatchRateLimit.OptionId || option.ID == vars.MaleMatchRateLimit.OptionId {
+		if !vars.ChangeGenderEnabled {
+			userGender, err := repo.GetUserQuestionDataByUserQuestion(ctx, chatId, option.QuestionId)
+			if err != nil {
+				return nil, nil, err
+			}
+			if userGender != nil && len(userGender) > 0 {
+				if userGender[0].OptionId != option.ID {
+					return nil, []tgbotapi.CallbackConfig{tgbotapi.NewCallback("", vars.ChangeGenderErrorMessage)}, nil
+				}
+			}
+		}
+	}
+
 	// get question
 	question, err := repo.GetQuestionById(ctx, option.QuestionId)
 	if err != nil {

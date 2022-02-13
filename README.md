@@ -117,6 +117,30 @@ VerifiedOptionId = 0
 UnverifiedOptionId = 0
 # anything option id
 AnyOptionId = 0
+
+[FemaleMatchRateLimit]
+# female option id
+OptionId = 2
+# rate limit endabled
+RateLimitEnabled = true
+# rate limit unit only support "day"
+RateLimitUnit = "day"
+# rate limit unit period, don't change this value.
+RateLimitUnitPeriod = 7
+# match per rate
+MatchPerRate = 1
+
+[MaleMatchRateLimit]
+# male option id
+OptionId = 1
+# rate limit endabled
+RateLimitEnabled = true
+# rate limit unit only support "day"
+RateLimitUnit = "day"
+# rate limit unit period, don't change this value.
+RateLimitUnitPeriod = 7
+# match per rate
+MatchPerRate = 2
 ```
 
 ## Menu configuration
@@ -197,3 +221,39 @@ WhiteEmailEnabled = false
             INSERT INTO `bot2`.`e_email_whitelist` (`id`, `email`) VALUES (1, 'test@a.com');
         ```
        > test@a.com is white email.
+
+# Match Rate Limit
+
+1. set up config file
+
+```toml
+[FemaleMatchRateLimit]
+# female option id
+OptionId = 2
+# rate limit endabled
+RateLimitEnabled = true
+# rate limit unit only support "day"
+RateLimitUnit = "day"
+# rate limit unit period, don't change this value.
+RateLimitUnitPeriod = 7
+# match per rate
+MatchPerRate = 1
+
+[MaleMatchRateLimit]
+# male option id
+OptionId = 1
+# rate limit endabled
+RateLimitEnabled = true
+# rate limit unit only support "day"
+RateLimitUnit = "day"
+# rate limit unit period, don't change this value.
+RateLimitUnitPeriod = 7
+# match per rate
+MatchPerRate = 2
+```
+
+2. how custom user match rate limit?
+
+    1. open `users` database table
+    2. set `custom_rate_limit_enabled` value as `1`
+    3. set `match_per_rate`

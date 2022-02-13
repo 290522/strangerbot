@@ -102,9 +102,9 @@ func commandStart(u User, m *tgbotapi.Message) bool {
 	}
 
 	// email validate
-	if len(u.Email) == 0 || (!u.IsVerify) {
+	repo := repository.GetRepository()
 
-		repo := repository.GetRepository()
+	if len(u.Email) == 0 || (!u.IsVerify) {
 
 		opts, err := repo.GetUserQuestionDataByUserQuestion(context.TODO(), u.ChatID, vars.VerifyProfileQuestionId)
 		if err != nil {
@@ -129,6 +129,32 @@ func commandStart(u User, m *tgbotapi.Message) bool {
 		//return true
 	}
 
+	// rate limit check
+	needMatchUser, err := repo.GetUserByChatId(context.Background(), u.ChatID)
+	if err != nil {
+		log.Println("GetUserByChatId error", err.Error())
+		_, _ = RetrySendMessage(u.ChatID, vars.InternalErrorMessage, emptyOpts)
+		return true
+	}
+
+	userQuestionData, err := repo.GetUserQuestionDataByUser(context.Background(), needMatchUser.ChatID)
+	if err != nil {
+		log.Println("GetUserQuestionDataByUser error", err.Error())
+		_, _ = RetrySendMessage(u.ChatID, vars.InternalErrorMessage, emptyOpts)
+		return true
+	}
+
+	if _, err := service.RateLimit(context.Background(), needMatchUser, userQuestionData); err != nil {
+		if err == service.ErrRateLimit {
+			_, _ = RetrySendMessage(u.ChatID, vars.RateLimitMessage, emptyOpts)
+		} else {
+			log.Println("RateLimit error", err.Error())
+			_, _ = RetrySendMessage(u.ChatID, vars.InternalErrorMessage, emptyOpts)
+		}
+		return true
+	}
+
+	// start available
 	db.Exec("UPDATE users SET available = 1 WHERE chat_id = ?", u.ChatID)
 
 	_, _ = RetrySendMessage(u.ChatID, vars.StartMatchingMessage, emptyOpts)

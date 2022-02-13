@@ -9,14 +9,16 @@ import (
 )
 
 type ConfigParser struct {
-	Telegram           Telegram
-	WhiteList          WhiteList
-	MysqlDB            Database
-	RedisConf          RedisConf
-	OTPConf            OTPConf
-	EmailOTP           EmailOTP
-	VerifyProfileConf  VerifyProfileConf
-	VerifyMatchingConf VerifyMatchingConf
+	Telegram             Telegram
+	WhiteList            WhiteList
+	MysqlDB              Database
+	RedisConf            RedisConf
+	OTPConf              OTPConf
+	EmailOTP             EmailOTP
+	VerifyProfileConf    VerifyProfileConf
+	VerifyMatchingConf   VerifyMatchingConf
+	FemaleMatchRateLimit DefaultMatchRateLimitConf
+	MaleMatchRateLimit   DefaultMatchRateLimitConf
 }
 
 type WhiteList struct {
@@ -26,9 +28,10 @@ type WhiteList struct {
 }
 
 type Telegram struct {
-	Namespace string
-	Secret    string
-	BotKey    string
+	Namespace           string
+	Secret              string
+	BotKey              string
+	ChangeGenderEnabled bool
 }
 
 type RedisConf struct {
@@ -78,6 +81,14 @@ type VerifyMatchingConf struct {
 	VerifiedOptionId   int64
 	UnverifiedOptionId int64
 	AnyOptionId        int64
+}
+
+type DefaultMatchRateLimitConf struct {
+	OptionId            int64
+	RateLimitEnabled    bool
+	RateLimitUnit       string
+	RateLimitUnitPeriod int64
+	MatchPerRate        int64
 }
 
 // 加载配置
